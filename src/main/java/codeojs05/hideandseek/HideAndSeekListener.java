@@ -1,6 +1,5 @@
 package codeojs05.hideandseek;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -8,9 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class HideAndSeekListener extends JavaPlugin implements Listener {
+public class HideAndSeekListener implements Listener {
 
     @EventHandler
     public void onTag(EntityDamageByEntityEvent event) {
@@ -46,11 +44,11 @@ public class HideAndSeekListener extends JavaPlugin implements Listener {
 
         if (HideAndSeekMain.getSeekers().contains(event.getPlayer())) return;
 
-            if (HideAndSeekMain.getHiders().contains(event.getPlayer())) return;
+        if (HideAndSeekMain.getHiders().contains(event.getPlayer())) return;
 
-                if (HideAndSeekMain.getExempt().contains(event.getPlayer())) return;
+        if (HideAndSeekMain.getExempt().contains(event.getPlayer())) return;
 
-                    HideAndSeekMain.getHiders().add(event.getPlayer());
+        HideAndSeekMain.getHiders().add(event.getPlayer());
 
     }
 }
