@@ -22,9 +22,13 @@ public final class HideAndSeekMain extends JavaPlugin {
 
     private static final List<Player> exemptList = new ArrayList<>();
 
-    public static List<Player> getExempt() {
-        return exemptList;
-    }
+    public static List<Player> getExempt() { return exemptList; }
+
+    private static HideAndSeek instance;
+
+    public static HideAndSeek getInstance() { return instance; }
+
+
 
     @Override
     public void onEnable() {
