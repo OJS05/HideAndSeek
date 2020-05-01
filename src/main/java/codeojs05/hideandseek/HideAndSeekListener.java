@@ -28,10 +28,10 @@ public class HideAndSeekListener implements Listener {
                         HideAndSeekMain.getSeekers().add(victim);
 
                         for (Player seekers : HideAndSeekMain.getSeekers()) {
-                            seekers.sendMessage(ChatColor.DARK_RED + victim.getName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
+                            seekers.sendMessage(ChatColor.DARK_RED + victim.getDisplayName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
                         }
                         for (Player hiders : HideAndSeekMain.getHiders()) {
-                            hiders.sendMessage(ChatColor.DARK_RED + victim.getName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
+                            hiders.sendMessage(ChatColor.DARK_RED + victim.getDisplayName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
                         }
                     }
                 }

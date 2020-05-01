@@ -30,7 +30,7 @@ public class HideAndSeekCommands implements CommandExecutor {
                     Player randomPlayer = onlinePlayers.get(random.nextInt(onlinePlayers.size()));
 
                     HideAndSeekMain.getSeekers().add(randomPlayer);
-                    Bukkit.broadcastMessage(ChatColor.DARK_RED + randomPlayer.getName() + ChatColor.RESET + " is the seeker... Go hide!");
+                    Bukkit.broadcastMessage(ChatColor.DARK_RED + randomPlayer.getDisplayName() + ChatColor.RESET + " is the seeker... Go hide!");
 
                     HideAndSeekMain.getHiders().addAll(onlinePlayers);
                     HideAndSeekMain.getHiders().remove(randomPlayer);
@@ -45,6 +45,8 @@ public class HideAndSeekCommands implements CommandExecutor {
 
                     if (HideAndSeekMain.getSeekers().contains(player)) {
 
+                        Player randomHider = HideAndSeekMain.getHiders().get(random.nextInt(HideAndSeekMain.getHiders().size()));
+                        sender.sendMessage("A random hider is at" + randomHider.getLocation().getBlockX() + randomHider.getLocation().getBlockZ() + ".");
 
                     }
 
@@ -70,13 +72,13 @@ public class HideAndSeekCommands implements CommandExecutor {
                     player.sendMessage("Seekers:");
 
                     for (Player seeker : HideAndSeekMain.getSeekers()) {
-                        sender.sendMessage(seeker.getName());
+                        sender.sendMessage(seeker.getDisplayName());
                     }
 
                     player.sendMessage("Hiders:");
 
                     for (Player hider : HideAndSeekMain.getHiders()) {
-                        sender.sendMessage(hider.getName());
+                        sender.sendMessage(hider.getDisplayName());
                     }
                 }
             }
