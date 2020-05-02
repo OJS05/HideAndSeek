@@ -24,6 +24,7 @@ public final class HideAndSeekMain extends JavaPlugin {
 
     public static List<Player> getExempt() { return exemptList; }
 
+
     private static HideAndSeekMain instance;
 
     public static HideAndSeekMain getInstance() {
