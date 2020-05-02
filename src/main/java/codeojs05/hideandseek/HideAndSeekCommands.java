@@ -10,9 +10,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class HideAndSeekCommands implements CommandExecutor {
+
+    private static final List<UUID> cooldown = new ArrayList<>();
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
 
@@ -44,22 +47,35 @@ public class HideAndSeekCommands implements CommandExecutor {
                     Player player = (Player) sender;
 
                     if (HideAndSeekMain.getSeekers().contains(player)) {
+                        if (!cooldown.contains(player.getUniqueId())) {
+                            Player randomHider = HideAndSeekMain.getHiders().get(random.nextInt(HideAndSeekMain.getHiders().size()));
+                            sender.sendMessage("A random hider is at" + randomHider.getLocation().getBlockX() + randomHider.getLocation().getBlockZ() + ".");
 
-                        Player randomHider = HideAndSeekMain.getHiders().get(random.nextInt(HideAndSeekMain.getHiders().size()));
-                        sender.sendMessage("A random hider is at" + randomHider.getLocation().getBlockX() + randomHider.getLocation().getBlockZ() + ".");
+                            cooldown.add(player.getUniqueId());
 
+                            // Queue task to remove them in 1 minute
+                            Bukkit.getServer().getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> cooldown.remove(player.getUniqueId()), (60 * 20)); // 60 * 20 represents 1 minute. (20 ticks per second)
+                        } else {
+                            // send them message saying tey have cooldown
+                        }
                     }
 
                     if (HideAndSeekMain.getHiders().contains(player)) {
+                        if (!cooldown.contains(player.getUniqueId())) {
+                            List<Double> seekerDistance = new ArrayList<>();
 
-                        List<Double> seekerDistance = new ArrayList<>();
+                            for (Player distance : HideAndSeekMain.getSeekers()) {
+                                seekerDistance.add(distance.getLocation().distance(((Player) sender).getLocation()));
+                            }
+                            sender.sendMessage("The nearest seeker is " + ChatColor.DARK_RED + Collections.min(seekerDistance) + ChatColor.RESET + " blocks away.");
 
-                        for (Player distance : HideAndSeekMain.getSeekers()) {
-                            seekerDistance.add(distance.getLocation().distance(((Player) sender).getLocation()));
+                            cooldown.add(player.getUniqueId());
+
+                            // Queue task to remove them in 1 minute
+                            Bukkit.getServer().getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> cooldown.remove(player.getUniqueId()), (60 * 20)); // 60 * 20 represents 1 minute. (20 ticks per second)
+                        } else {
+                            // send them message saying tey have cooldown
                         }
-
-                        sender.sendMessage("The nearest seeker is " + ChatColor.DARK_RED + Collections.min(seekerDistance) + ChatColor.RESET + " blocks away.");
-
                     }
 
                 }
