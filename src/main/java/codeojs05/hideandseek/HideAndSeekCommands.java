@@ -96,6 +96,23 @@ public class HideAndSeekCommands implements CommandExecutor {
                     }
                 }
             }
-        } return true;
+
+            if (args.length == 2) {
+
+                if (args[0].equalsIgnoreCase("exempt")) {
+
+                    if (sender.hasPermission("hideandseek.admin")) {
+
+                        Player targetPlayer = Bukkit.getPlayer(args[1]);
+
+                        HideAndSeekMain.getHiders().remove(targetPlayer);
+                        HideAndSeekMain.getSeekers().remove(targetPlayer);
+                        HideAndSeekMain.getExempt().add(targetPlayer);
+
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
