@@ -24,14 +24,16 @@ public final class HideAndSeekMain extends JavaPlugin {
 
     public static List<Player> getExempt() { return exemptList; }
 
-    private static HideAndSeek instance;
+    private static HideAndSeekMain instance;
 
-    public static HideAndSeek getInstance() { return instance; }
-
+    public static HideAndSeekMain getInstance() {
+        return instance;
+    }
 
 
     @Override
     public void onEnable() {
+        instance = this;
 
         getCommand("hideandseek").setExecutor(new HideAndSeekCommands());
 

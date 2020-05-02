@@ -10,11 +10,15 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class HideAndSeekCommands implements CommandExecutor {
 
+    private static final List<UUID> cooldown = new ArrayList<>();
+
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -45,23 +49,37 @@ public class HideAndSeekCommands implements CommandExecutor {
 
                     if (HideAndSeekMain.getSeekers().contains(player)) {
 
-                        Player randomHider = HideAndSeekMain.getHiders().get(random.nextInt(HideAndSeekMain.getHiders().size()));
-                        sender.sendMessage("A random hider is at" + randomHider.getLocation().getBlockX() + randomHider.getLocation().getBlockZ() + ".");
+                        if (!cooldown.contains(player.getUniqueId())) {
+                            Player randomHider = HideAndSeekMain.getHiders().get(random.nextInt(HideAndSeekMain.getHiders().size()));
+                            sender.sendMessage("A random hider is at" + randomHider.getLocation().getBlockX() + randomHider.getLocation().getBlockZ() + ".");
+
+                            cooldown.add(player.getUniqueId());
+
+                            Bukkit.getServer().getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> cooldown.remove(player.getUniqueId()), (HideAndSeekMain.getSeekers().size() * 180 * 20));
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "You are still on a cooldown!");
+                        }
 
                     }
 
                     if (HideAndSeekMain.getHiders().contains(player)) {
 
-                        List<Double> seekerDistance = new ArrayList<>();
+                        if (!cooldown.contains(player.getUniqueId())) {
+                            List<Double> seekerDistance = new ArrayList<>();
 
-                        for (Player distance : HideAndSeekMain.getSeekers()) {
-                            seekerDistance.add(distance.getLocation().distance(((Player) sender).getLocation()));
+                            for (Player distance : HideAndSeekMain.getSeekers()) {
+                                seekerDistance.add(distance.getLocation().distance(((Player) sender).getLocation()));
+                            }
+                            sender.sendMessage("The nearest seeker is " + ChatColor.DARK_RED + Collections.min(seekerDistance) + ChatColor.RESET + " blocks away.");
+
+                            cooldown.add(player.getUniqueId());
+
+                            Bukkit.getServer().getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> cooldown.remove(player.getUniqueId()), (HideAndSeekMain.getHiders().size() * 120 * 20));
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "You are still on a cooldown!");
+
                         }
-
-                        sender.sendMessage("The nearest seeker is " + ChatColor.DARK_RED + Collections.min(seekerDistance) + ChatColor.RESET + " blocks away.");
-
                     }
-
                 }
             }
 
