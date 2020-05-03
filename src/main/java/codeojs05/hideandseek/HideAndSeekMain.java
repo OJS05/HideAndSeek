@@ -1,5 +1,7 @@
 package codeojs05.hideandseek;
 
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,8 +24,9 @@ public final class HideAndSeekMain extends JavaPlugin {
 
     private static final List<Player> exemptList = new ArrayList<>();
 
-    public static List<Player> getExempt() { return exemptList; }
-
+    public static List<Player> getExempt() {
+        return exemptList;
+    }
 
     private static HideAndSeekMain instance;
 
@@ -31,6 +34,15 @@ public final class HideAndSeekMain extends JavaPlugin {
         return instance;
     }
 
+    @Getter
+    @Setter
+    private static boolean canHiderJoin = false;
+
+    private static int gameLength = 4;
+
+    public static int getGameLength() {
+        return gameLength;
+    }
 
     @Override
     public void onEnable() {

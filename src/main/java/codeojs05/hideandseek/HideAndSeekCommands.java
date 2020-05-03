@@ -13,12 +13,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static codeojs05.hideandseek.HideAndSeekMain.isHiderJoin;
+
 public class HideAndSeekCommands implements CommandExecutor {
 
     private static final List<UUID> cooldown = new ArrayList<>();
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
-
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -39,6 +40,7 @@ public class HideAndSeekCommands implements CommandExecutor {
                     HideAndSeekMain.getHiders().addAll(onlinePlayers);
                     HideAndSeekMain.getHiders().remove(randomPlayer);
 
+                    Bukkit.getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> HideAndSeekMain.isHiderJoin() == true, ((HideAndSeekMain.getGameLength() / 4) * 60 * 60 * 20));
                 }
             }
 
@@ -112,6 +114,7 @@ public class HideAndSeekCommands implements CommandExecutor {
                         HideAndSeekMain.getHiders().remove(targetPlayer);
                         HideAndSeekMain.getSeekers().remove(targetPlayer);
                         HideAndSeekMain.getExempt().add(targetPlayer);
+
 
                     }
                 }
