@@ -1,7 +1,8 @@
 package codeojs05.hideandseek;
 
-import jdk.nashorn.internal.objects.annotations.Getter;
-import jdk.nashorn.internal.objects.annotations.Setter;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -10,39 +11,25 @@ import java.util.List;
 
 public final class HideAndSeekMain extends JavaPlugin {
 
-    private static final List<Player> seekerList = new ArrayList<>();
+    @Getter
+    private static final List<Player> seekers = new ArrayList<>();
 
-    public static List<Player> getSeekers() {
-        return seekerList;
-    }
+    @Getter
+    private static final List<Player> hiders = new ArrayList<>();
 
-    private static final List<Player> hiderList = new ArrayList<>();
+    @Getter
+    private static final List<Player> exempt = new ArrayList<>();
 
-    public static List<Player> getHiders() {
-        return hiderList;
-    }
-
-    private static final List<Player> exemptList = new ArrayList<>();
-
-    public static List<Player> getExempt() {
-        return exemptList;
-    }
-
+    @Getter
     private static HideAndSeekMain instance;
-
-    public static HideAndSeekMain getInstance() {
-        return instance;
-    }
 
     @Getter
     @Setter
-    private static boolean canHiderJoin = false;
+    private static boolean canHiderJoin;
 
-    private static int gameLength = 4;
-
-    public static int getGameLength() {
-        return gameLength;
-    }
+    @Getter
+    @Setter
+    private static boolean gameRunning;
 
     @Override
     public void onEnable() {
@@ -50,7 +37,8 @@ public final class HideAndSeekMain extends JavaPlugin {
 
         getCommand("hideandseek").setExecutor(new HideAndSeekCommands());
 
+        getConfig().options().copyDefaults();
+        saveDefaultConfig();
     }
-
 
 }

@@ -30,6 +30,7 @@ public class HideAndSeekListener implements Listener {
                         for (Player seekers : HideAndSeekMain.getSeekers()) {
                             seekers.sendMessage(ChatColor.DARK_RED + victim.getDisplayName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
                         }
+
                         for (Player hiders : HideAndSeekMain.getHiders()) {
                             hiders.sendMessage(ChatColor.DARK_RED + victim.getDisplayName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
                         }
@@ -42,13 +43,16 @@ public class HideAndSeekListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
 
-        if (HideAndSeekMain.getSeekers().contains(event.getPlayer())) return;
+        if (HideAndSeekMain.isCanHiderJoin()) {
 
-        if (HideAndSeekMain.getHiders().contains(event.getPlayer())) return;
+            if (HideAndSeekMain.getSeekers().contains(event.getPlayer())) return;
 
-        if (HideAndSeekMain.getExempt().contains(event.getPlayer())) return;
+            if (HideAndSeekMain.getHiders().contains(event.getPlayer())) return;
 
-        HideAndSeekMain.getHiders().add(event.getPlayer());
+            if (HideAndSeekMain.getExempt().contains(event.getPlayer())) return;
 
+            HideAndSeekMain.getHiders().add(event.getPlayer());
+
+        }
     }
 }
