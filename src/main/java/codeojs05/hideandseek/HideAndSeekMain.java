@@ -4,6 +4,7 @@ package codeojs05.hideandseek;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -31,14 +32,20 @@ public final class HideAndSeekMain extends JavaPlugin {
     @Setter
     private static boolean gameRunning;
 
+    @Getter
+    private static int gameLength;
+
     @Override
     public void onEnable() {
         instance = this;
 
         getCommand("hideandseek").setExecutor(new HideAndSeekCommands());
 
-        getConfig().options().copyDefaults();
         saveDefaultConfig();
+
+        gameLength = getConfig().getInt("GameLength");
     }
+
+
 
 }

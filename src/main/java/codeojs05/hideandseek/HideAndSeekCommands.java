@@ -41,8 +41,23 @@ public class HideAndSeekCommands implements CommandExecutor {
                     HideAndSeekMain.setCanHiderJoin(true);
                     HideAndSeekMain.setGameRunning(true);
 
-                    Bukkit.getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> HideAndSeekMain.setCanHiderJoin(false), (HideAndSeekMain.getInstance().getConfig().getInt("GameLength") / 4) * 60 * 60 * 20);
-                    Bukkit.getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> HideAndSeekMain.setGameRunning(false), HideAndSeekMain.getInstance().getConfig().getInt("GameLength") * 60 * 60 * 20);
+                    Bukkit.getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> HideAndSeekMain.setCanHiderJoin(false), (HideAndSeekMain.getGameLength() / 4) * 60 * 60 * 20);
+                    Bukkit.getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> HideAndSeekMain.setGameRunning(false), HideAndSeekMain.getGameLength() * 60 * 60 * 20);
+                    Bukkit.getScheduler().runTaskLater(HideAndSeekMain.getInstance(), () -> {
+                        if (HideAndSeekMain.isGameRunning()) {
+                            if (HideAndSeekMain.getHiders().size() > 0) {
+                                for (Player seekers : HideAndSeekMain.getSeekers()) {
+                                    seekers.sendMessage(ChatColor.DARK_RED + "The Hiders have won!");
+                                }
+
+                                for (Player hiders : HideAndSeekMain.getHiders()) {
+                                    hiders.sendMessage(ChatColor.GOLD + "The Hiders have won");
+                                }
+
+                                HideAndSeekMain.setGameRunning(false);
+                            }
+                        }
+                    }, (HideAndSeekMain.getGameLength() * 60 * 60 * 20) - 1);
                 }
             }
 

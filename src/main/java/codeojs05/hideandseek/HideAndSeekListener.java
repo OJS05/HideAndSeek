@@ -34,6 +34,18 @@ public class HideAndSeekListener implements Listener {
                         for (Player hiders : HideAndSeekMain.getHiders()) {
                             hiders.sendMessage(ChatColor.DARK_RED + victim.getDisplayName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
                         }
+
+                        if(HideAndSeekMain.getHiders().size() == 0){
+
+                            HideAndSeekMain.setGameRunning(false);
+
+                            for (Player seekers: HideAndSeekMain.getSeekers()) {
+                                seekers.sendMessage(ChatColor.DARK_RED + "The seekers have won!");
+                            }
+
+                        }
+
+
                     }
                 }
             }
