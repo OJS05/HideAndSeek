@@ -92,7 +92,7 @@ public class HSCommands implements CommandExecutor {
 
                                         if (seekerPlayer != null) {
                                             double dist = player.getLocation().distance(seekerPlayer.getLocation());
-                                            
+
                                             if (dist < distMin) {
                                                 distMin = dist;
                                             }
