@@ -1,4 +1,4 @@
-package codeojs05.hideandseek;
+package pw.biome.hideandseek.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -8,14 +8,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import pw.biome.hideandseek.HideAndSeek;
 
 import java.util.UUID;
 
-public class HideAndSeekListener implements Listener {
+public class HSListener implements Listener {
 
-    private final HideAndSeekMain plugin;
+    private final HideAndSeek plugin;
 
-    public HideAndSeekListener(HideAndSeekMain plugin) {
+    public HSListener(HideAndSeek plugin) {
         this.plugin = plugin;
     }
 
