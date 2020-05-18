@@ -58,7 +58,7 @@ public class HSCommands implements CommandExecutor {
                                     Player randomHider = Bukkit.getPlayer(randomHsPlayerHider.getUuid());
 
                                     if (randomHider != null) {
-                                        sender.sendMessage("A random hider is at" + randomHider.getLocation().getBlockX()
+                                        sender.sendMessage(ChatColor.AQUA + "A random hider is at" + randomHider.getLocation().getBlockX() + ", "
                                                 + randomHider.getLocation().getBlockZ() + ".");
 
                                         cooldown.add(player.getUniqueId());
@@ -86,20 +86,22 @@ public class HSCommands implements CommandExecutor {
                                 or ignore, up to you
                                  */
 
-                                    double distMin = 0;
+                                    double distMin = 1000000000;
                                     for (HSPlayer seekers : gameManager.getSeekers().getMembers()) {
                                         Player seekerPlayer = Bukkit.getPlayer(seekers.getUuid());
 
                                         if (seekerPlayer != null) {
                                             double dist = player.getLocation().distance(seekerPlayer.getLocation());
 
-                                            if (distMin > dist) {
+                                            System.out.println(dist);
+
+                                            if (dist < distMin) {
                                                 distMin = dist;
                                             }
                                         }
                                     }
 
-                                    sender.sendMessage("The nearest seeker is " + ChatColor.DARK_RED + distMin + ChatColor.RESET + " blocks away.");
+                                    sender.sendMessage(ChatColor.AQUA + "The nearest seeker is " + ChatColor.DARK_RED + Math.round(distMin) + ChatColor.AQUA + " blocks away.");
 
                                     cooldown.add(player.getUniqueId());
 
@@ -124,6 +126,16 @@ public class HSCommands implements CommandExecutor {
                     sender.sendMessage(ChatColor.GOLD + "Hiders:");
                     gameManager.getHiders().getMembers().forEach(hsPlayer ->
                             sender.sendMessage(ChatColor.GOLD + "- " + hsPlayer.getName()));
+                }
+            }
+
+            if (args[0].equalsIgnoreCase("rebuild")) {
+                if (sender.hasPermission("hideandseek.admin")) {
+                    HSPlayer.getHsPlayerMap().clear();
+                    Bukkit.getOnlinePlayers().forEach(player -> {
+                        HSPlayer hsPlayer = HSPlayer.getOrCreate(player.getUniqueId(), player.getDisplayName());
+                    });
+                    sender.sendMessage(ChatColor.GREEN + "Cache rebuilt");
                 }
             }
 

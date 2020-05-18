@@ -6,28 +6,24 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import pro.husk.ichat.obj.PlayerCache;
 import pw.biome.hideandseek.HideAndSeek;
 import pw.biome.hideandseek.objects.HSPlayer;
 import pw.biome.hideandseek.util.TeamType;
 
-import java.util.UUID;
-
 public class HideAndSeekListener implements Listener {
 
     @EventHandler
-    public void playerPreLogin(AsyncPlayerPreLoginEvent event) {
-        UUID uuid = event.getUniqueId();
-        PlayerCache playerCache = PlayerCache.getFromUUID(uuid);
+    public void playerPreLogin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
 
-        if (playerCache != null) {
-            String name = playerCache.getDisplayName();
+        HSPlayer hsPlayer = HSPlayer.getOrCreate(player.getUniqueId(), player.getDisplayName());
 
-            HSPlayer hsPlayer = HSPlayer.getOrCreate(uuid, name);
+        if (HideAndSeek.getInstance().getGameManager().isGameRunning()) {
             if (hsPlayer.getCurrentTeam() == null) {
                 if (HideAndSeek.getInstance().getGameManager().isCanHiderJoin()) {
-                    hsPlayer.setCurrentTeam(HideAndSeek.getInstance().getGameManager().getHiders());
+                    hsPlayer.setCurrentTeam(HideAndSeek.getInstance().getGameManager().getHiders(), true);
                 }
             }
         }
@@ -49,7 +45,7 @@ public class HideAndSeekListener implements Listener {
 
             if (damagerHsPlayer.getCurrentTeam().getTeamType() == TeamType.SEEKER &&
                     victimHsPlayer.getCurrentTeam().getTeamType() == TeamType.HIDER) {
-                victimHsPlayer.setCurrentTeam(damagerHsPlayer.getCurrentTeam());
+                victimHsPlayer.setCurrentTeam(damagerHsPlayer.getCurrentTeam(), true);
             }
         }
     }

@@ -15,11 +15,10 @@ public class HSTeam {
     private final TeamType teamType;
 
     @Getter
-    private final List<HSPlayer> members;
+    private final List<HSPlayer> members = new ArrayList<>();
 
     public HSTeam(String name, TeamType teamType) {
         this.name = name;
-        this.members = new ArrayList<>();
         this.teamType = teamType;
     }
 

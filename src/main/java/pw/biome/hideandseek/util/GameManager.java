@@ -6,12 +6,15 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import pro.husk.ichat.iChat;
 import pro.husk.ichat.obj.PlayerCache;
 import pw.biome.hideandseek.HideAndSeek;
 import pw.biome.hideandseek.objects.HSPlayer;
 import pw.biome.hideandseek.objects.HSTeam;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameManager {
@@ -35,9 +38,12 @@ public class GameManager {
     @Getter
     private int gameLength;
 
+    @Getter
+    private final List<BukkitTask> taskList = new ArrayList<>();
+
     public void setupGame() {
-        hiders = new HSTeam("Hiders", TeamType.HIDER);
-        seekers = new HSTeam("Seekers", TeamType.SEEKER);
+        this.hiders = new HSTeam("Hider", TeamType.HIDER);
+        this.seekers = new HSTeam("Seeker", TeamType.SEEKER);
 
         gameLength = HideAndSeek.getInstance().getConfig().getInt("game-length");
     }
@@ -48,26 +54,19 @@ public class GameManager {
         Player randomPlayer = onlinePlayers.get(random.nextInt(onlinePlayers.size()));
         HSPlayer randomHsPlayer = HSPlayer.getExact(randomPlayer.getUniqueId());
 
-        randomHsPlayer.setCurrentTeam(seekers);
+        randomHsPlayer.setCurrentTeam(seekers, false);
 
         onlinePlayers.forEach(player -> {
             HSPlayer hsPlayer = HSPlayer.getExact(player.getUniqueId());
-            if (hsPlayer.getCurrentTeam() == null) hsPlayer.setCurrentTeam(hiders);
+            if (hsPlayer.getCurrentTeam() == null) hsPlayer.setCurrentTeam(hiders, false);
         });
 
         canHiderJoin = true;
         gameRunning = true;
 
-        Bukkit.getScheduler().runTaskLater(HideAndSeek.getInstance(), () -> canHiderJoin = false, (gameLength / 4) * 60 * 60 * 20);
-        Bukkit.getScheduler().runTaskLater(HideAndSeek.getInstance(), () -> gameRunning = false, gameLength * 60 * 60 * 20);
-        Bukkit.getScheduler().runTaskLater(HideAndSeek.getInstance(), this::calculateWinner, (gameLength * 60 * 60 * 20) - 1);
-    }
-
-    public void setGameRunning(boolean newValue) {
-        gameRunning = newValue;
-        if (!newValue) {
-            iChat.getPlugin().restartScoreboardTask();
-        }
+        taskList.add(Bukkit.getScheduler().runTaskLater(HideAndSeek.getInstance(), () -> canHiderJoin = false, (gameLength / 4) * 60 * 60 * 20));
+        taskList.add(Bukkit.getScheduler().runTaskLater(HideAndSeek.getInstance(), () -> gameRunning = false, gameLength * 60 * 60 * 20));
+        taskList.add(Bukkit.getScheduler().runTaskLater(HideAndSeek.getInstance(), this::calculateWinner, (gameLength * 60 * 60 * 20) - 1));
     }
 
     public void calculateWinner() {
@@ -77,12 +76,25 @@ public class GameManager {
             // Process win ?
             Bukkit.broadcastMessage(ChatColor.DARK_RED + "The seekers have won!");
 
-            // Remove the data from the old game
-            hiders.getMembers().clear();
-            seekers.getMembers().clear();
-
-            setGameRunning(false);
+            finishGame();
         }
+    }
+
+    /**
+     * Clean up data from the previous game
+     */
+    public void finishGame() {
+        hiders.getMembers().clear();
+        seekers.getMembers().clear();
+
+        HSPlayer.getHsPlayerMap().values().forEach(hsPlayer -> hsPlayer.setCurrentTeam(null, false));
+
+        this.gameRunning = false;
+        this.canHiderJoin = false;
+
+        taskList.forEach(BukkitTask::cancel);
+
+        iChat.getPlugin().restartScoreboardTask();
     }
 
     public void updateScoreboards() {
