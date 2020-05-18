@@ -1,10 +1,11 @@
 name: HideAndSeek
 version: ${project.version}
-main: codeojs05.hideandseek.HideAndSeek
+main: codeojs05.hideandseek.HideAndSeekMain
 api-version: 1.13
 authors: [ojs05]
 description: This plugin creates a game where the seekers are trying to the hiders.
 commands:
   hideandseek:
-    permission:
-
+    description: Base command
+    usage: /hideandseek
+    aliases: [hs]

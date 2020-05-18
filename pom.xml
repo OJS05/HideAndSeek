@@ -63,6 +63,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>husk</id>
+            <url>https://maven.husk.pro/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -76,7 +80,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>pro.husk</groupId>
+            <artifactId>ichat</artifactId>
+            <version>3.0.5</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

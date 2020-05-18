@@ -1,5 +1,6 @@
 package codeojs05.hideandseek;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -8,7 +9,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.UUID;
+
 public class HideAndSeekListener implements Listener {
+
+    private final HideAndSeekMain plugin;
+
+    public HideAndSeekListener(HideAndSeekMain plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onTag(EntityDamageByEntityEvent event) {
@@ -18,34 +27,37 @@ public class HideAndSeekListener implements Listener {
             Player damager = (Player) event.getDamager();
             Player victim = (Player) event.getEntity();
 
-            if (HideAndSeekMain.getSeekers().contains(damager)) {
+            if (plugin.getSeekers().contains(damager.getUniqueId())) {
+                if (plugin.getHiders().contains(victim.getUniqueId())) {
+                    if ((damager.getInventory().getItemInMainHand().getType().equals(Material.AIR))
+                            || (damager.getInventory().getItemInOffHand().getType().equals(Material.AIR))) {
 
-                if (HideAndSeekMain.getHiders().contains(victim)) {
+                        plugin.getHiders().remove(victim.getUniqueId());
+                        plugin.getSeekers().add(victim.getUniqueId());
 
-                    if ((damager.getInventory().getItemInMainHand().getType().equals(Material.AIR)) || (damager.getInventory().getItemInOffHand().getType().equals(Material.AIR))) {
-
-                        HideAndSeekMain.getHiders().remove(victim);
-                        HideAndSeekMain.getSeekers().add(victim);
-
-                        for (Player seekers : HideAndSeekMain.getSeekers()) {
-                            seekers.sendMessage(ChatColor.DARK_RED + victim.getDisplayName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
-                        }
-
-                        for (Player hiders : HideAndSeekMain.getHiders()) {
-                            hiders.sendMessage(ChatColor.DARK_RED + victim.getDisplayName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
-                        }
-
-                        if(HideAndSeekMain.getHiders().size() == 0){
-
-                            HideAndSeekMain.setGameRunning(false);
-
-                            for (Player seekers: HideAndSeekMain.getSeekers()) {
-                                seekers.sendMessage(ChatColor.DARK_RED + "The seekers have won!");
+                        for (UUID seeker : plugin.getSeekers()) {
+                            Player seekers = Bukkit.getPlayer(seeker);
+                            if (seekers != null) {
+                                seekers.sendMessage(ChatColor.DARK_RED + victim.getDisplayName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
                             }
-
                         }
 
+                        for (UUID hider : plugin.getHiders()) {
+                            Player hiders = Bukkit.getPlayer(hider);
+                            if (hiders != null) {
+                                hiders.sendMessage(ChatColor.DARK_RED + victim.getDisplayName() + ChatColor.RESET + " has joined the" + ChatColor.DARK_RED + " SEEKER " + ChatColor.RESET + "team!");
+                            }
+                        }
 
+                        if (plugin.getHiders().size() == 0) {
+                            plugin.setGameRunning(false);
+                            for (UUID seeker : plugin.getSeekers()) {
+                                Player seekers = Bukkit.getPlayer(seeker);
+                                if (seekers != null) {
+                                    seekers.sendMessage(ChatColor.DARK_RED + "The seekers have won!");
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -54,17 +66,14 @@ public class HideAndSeekListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
 
-        if (HideAndSeekMain.isCanHiderJoin()) {
+        if (plugin.isCanHiderJoin()) {
+            if (plugin.getSeekers().contains(uuid)) return;
+            if (plugin.getHiders().contains(uuid)) return;
+            if (plugin.getExempt().contains(uuid)) return;
 
-            if (HideAndSeekMain.getSeekers().contains(event.getPlayer())) return;
-
-            if (HideAndSeekMain.getHiders().contains(event.getPlayer())) return;
-
-            if (HideAndSeekMain.getExempt().contains(event.getPlayer())) return;
-
-            HideAndSeekMain.getHiders().add(event.getPlayer());
-
+            plugin.getHiders().add(uuid);
         }
     }
 }
