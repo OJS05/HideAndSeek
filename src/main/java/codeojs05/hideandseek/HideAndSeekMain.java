@@ -52,6 +52,7 @@ public final class HideAndSeekMain extends JavaPlugin {
             // We want to overwrite the updateScoreboard of iChat
             int scoreboardTaskId = iChat.getScoreboardTaskId();
             if (scoreboardTaskId != 0) {
+                iChat.setScoreboardTaskId(0);
                 Bukkit.getScheduler().cancelTask(iChat.getScoreboardTaskId());
             }
 
@@ -88,6 +89,8 @@ public final class HideAndSeekMain extends JavaPlugin {
     }
 
     private void restartRegularTablistTask() {
+        if (iChat.getScoreboardTaskId() != 0) return;
+
         int taskId = getServer().getScheduler().scheduleSyncRepeatingTask(iChat.getPlugin(), () -> {
             iChat.getPlugin().updateScoreboards();
         }, (10 * 20), (10 * 20));
