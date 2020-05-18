@@ -3,7 +3,6 @@ package pw.biome.hideandseek;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import pw.biome.hideandseek.commands.HSCommands;
-import pw.biome.hideandseek.listener.HSListener;
 import pw.biome.hideandseek.util.GameManager;
 
 public final class HideAndSeek extends JavaPlugin {
