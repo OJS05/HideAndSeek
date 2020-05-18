@@ -145,6 +145,7 @@ public class HSCommands implements CommandExecutor {
 
                             if (targetPlayer != null) {
                                 HSPlayer hsPlayer = HSPlayer.getExact(targetPlayer.getUniqueId());
+                                hsPlayer.setCurrentTeam(null, true);
                                 hsPlayer.setExempt(true);
                             }
                         }

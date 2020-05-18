@@ -21,7 +21,7 @@ public class HideAndSeekListener implements Listener {
         HSPlayer hsPlayer = HSPlayer.getOrCreate(player.getUniqueId(), player.getDisplayName());
 
         if (HideAndSeek.getInstance().getGameManager().isGameRunning()) {
-            if (hsPlayer.getCurrentTeam() == null) {
+            if (!hsPlayer.isExempt() && hsPlayer.getCurrentTeam() == null) {
                 if (HideAndSeek.getInstance().getGameManager().isCanHiderJoin()) {
                     hsPlayer.setCurrentTeam(HideAndSeek.getInstance().getGameManager().getHiders(), true);
                 }
@@ -55,7 +55,7 @@ public class HideAndSeekListener implements Listener {
         if (!HideAndSeek.getInstance().getGameManager().isGameRunning()) return;
 
         HSPlayer hsPlayer = HSPlayer.getExact(event.getPlayer().getUniqueId());
-        hsPlayer.startLeaveTask();
+        if (!hsPlayer.isExempt()) hsPlayer.startLeaveTask();
     }
 
     @EventHandler
@@ -63,6 +63,6 @@ public class HideAndSeekListener implements Listener {
         if (!HideAndSeek.getInstance().getGameManager().isGameRunning()) return;
 
         HSPlayer hsPlayer = HSPlayer.getExact(event.getUniqueId());
-        hsPlayer.cancelLeaveTask();
+        if (!hsPlayer.isExempt()) hsPlayer.cancelLeaveTask();
     }
 }
