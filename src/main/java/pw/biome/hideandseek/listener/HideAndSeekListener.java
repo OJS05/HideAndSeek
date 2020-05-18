@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import pro.husk.ichat.obj.PlayerCache;
 import pw.biome.hideandseek.HideAndSeek;
 import pw.biome.hideandseek.objects.HSPlayer;
-import pw.biome.hideandseek.objects.TeamType;
+import pw.biome.hideandseek.util.TeamType;
 
 import java.util.UUID;
 

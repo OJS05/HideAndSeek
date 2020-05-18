@@ -1,6 +1,7 @@
 package pw.biome.hideandseek.objects;
 
 import lombok.Getter;
+import pw.biome.hideandseek.util.TeamType;
 
 import java.util.ArrayList;
 import java.util.List;

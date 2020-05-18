@@ -11,7 +11,6 @@ import pro.husk.ichat.obj.PlayerCache;
 import pw.biome.hideandseek.HideAndSeek;
 import pw.biome.hideandseek.objects.HSPlayer;
 import pw.biome.hideandseek.objects.HSTeam;
-import pw.biome.hideandseek.objects.TeamType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
