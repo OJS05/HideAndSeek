@@ -137,18 +137,24 @@ public class HSCommands implements CommandExecutor {
                 }
             }
 
-            if (args.length == 2) {
+            if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("exempt")) {
-                    if (sender.hasPermission("hideandseek.admin")) {
-                        if (gameManager.isGameRunning()) {
-                            Player targetPlayer = Bukkit.getPlayer(args[1]);
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+                        HSPlayer hsPlayer = HSPlayer.getExact(player.getUniqueId());
 
-                            if (targetPlayer != null) {
-                                HSPlayer hsPlayer = HSPlayer.getExact(targetPlayer.getUniqueId());
-                                hsPlayer.setCurrentTeam(null, true);
-                                hsPlayer.setExempt(true);
-                            }
+                        if (!hsPlayer.isExempt()) {
+                            hsPlayer.setExempt(true);
                         }
+                    }
+                }
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("include")) {
+                if (sender.hasPermission("hideandseek.admin")) {
+                    Player target = Bukkit.getPlayer(args[1]);
+
+                    if (target != null) {
+                        HSPlayer hsPlayer = HSPlayer.getExact(target.getUniqueId());
+                        hsPlayer.setExempt(false);
                     }
                 }
             }

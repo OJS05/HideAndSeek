@@ -1,5 +1,11 @@
 package pw.biome.hideandseek.listener;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,9 +14,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import pro.husk.ichat.iChat;
 import pw.biome.hideandseek.HideAndSeek;
 import pw.biome.hideandseek.objects.HSPlayer;
 import pw.biome.hideandseek.util.TeamType;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class HideAndSeekListener implements Listener {
 

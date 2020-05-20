@@ -15,6 +15,7 @@ import pw.biome.hideandseek.objects.HSTeam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameManager {
@@ -41,11 +42,20 @@ public class GameManager {
     @Getter
     private final List<BukkitTask> taskList = new ArrayList<>();
 
+    @Getter
+    private final List<UUID> exemptPlayers = new ArrayList<>();
+
     public void setupGame() {
         this.hiders = new HSTeam("Hider", TeamType.HIDER);
         this.seekers = new HSTeam("Seeker", TeamType.SEEKER);
 
         gameLength = HideAndSeek.getInstance().getConfig().getInt("game-length");
+
+        // Load exempt users
+        HideAndSeek.getInstance().getConfig().getStringList("exempt-players").forEach(uuidString -> {
+            UUID uuid = UUID.fromString(uuidString);
+            exemptPlayers.add(uuid);
+        });
     }
 
     public void createGame() {
@@ -73,9 +83,7 @@ public class GameManager {
         int hiderSize = hiders.getMembers().size();
 
         if (hiderSize == 0) {
-            // Process win ?
             Bukkit.broadcastMessage(ChatColor.DARK_RED + "The seekers have won!");
-
             finishGame();
         }
     }
@@ -95,6 +103,8 @@ public class GameManager {
         taskList.forEach(BukkitTask::cancel);
 
         iChat.getPlugin().restartScoreboardTask();
+
+        saveExemptList();
     }
 
     public void updateScoreboards() {
@@ -127,5 +137,15 @@ public class GameManager {
                 });
             });
         }
+    }
+
+    private void saveExemptList() {
+        List<String> uuidStringList = new ArrayList<>();
+        exemptPlayers.forEach(uuid -> {
+            uuidStringList.add(uuid.toString());
+        });
+
+        HideAndSeek.getInstance().getConfig().set("exempt-players", uuidStringList);
+        HideAndSeek.getInstance().saveConfig();
     }
 }

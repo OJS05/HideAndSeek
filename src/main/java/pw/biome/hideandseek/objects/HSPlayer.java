@@ -1,7 +1,6 @@
 package pw.biome.hideandseek.objects;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import pw.biome.hideandseek.HideAndSeek;
@@ -24,7 +23,6 @@ public class HSPlayer {
     private HSTeam currentTeam;
 
     @Getter
-    @Setter
     private boolean exempt;
 
     @Getter
@@ -34,7 +32,21 @@ public class HSPlayer {
         this.uuid = uuid;
         this.name = name;
 
+        if (HideAndSeek.getInstance().getGameManager().getExemptPlayers().contains(uuid)) {
+            this.exempt = true;
+        }
+
         hsPlayerMap.put(uuid, this);
+    }
+
+    public void setExempt(boolean exempt) {
+        this.exempt = exempt;
+
+        if (exempt) {
+            HideAndSeek.getInstance().getGameManager().getExemptPlayers().add(uuid);
+        } else {
+            HideAndSeek.getInstance().getGameManager().getExemptPlayers().remove(uuid);
+        }
     }
 
     public void setCurrentTeam(HSTeam newTeam, boolean triggerUpdate) {
