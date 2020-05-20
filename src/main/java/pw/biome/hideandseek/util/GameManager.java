@@ -68,7 +68,7 @@ public class GameManager {
 
         onlinePlayers.forEach(player -> {
             HSPlayer hsPlayer = HSPlayer.getExact(player.getUniqueId());
-            if (hsPlayer.getCurrentTeam() == null) hsPlayer.setCurrentTeam(hiders, false);
+            if (hsPlayer.getCurrentTeam() == null && !hsPlayer.isExempt()) hsPlayer.setCurrentTeam(hiders, false);
         });
 
         canHiderJoin = true;
