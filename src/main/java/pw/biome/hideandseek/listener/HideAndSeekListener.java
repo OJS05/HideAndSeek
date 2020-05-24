@@ -10,6 +10,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -74,6 +75,7 @@ public class HideAndSeekListener implements Listener {
 
     @EventHandler
     public void disableBlockBreaking(BlockBreakEvent event) {
+        if (!HideAndSeek.getInstance().getGameManager().isGameRunning()) return;
         Player player = event.getPlayer();
         HSPlayer hsPlayer = HSPlayer.getExact(player.getUniqueId());
 
@@ -85,6 +87,7 @@ public class HideAndSeekListener implements Listener {
 
     @EventHandler
     public void disableFireworkRockets(PlayerInteractEvent event) {
+        if (!HideAndSeek.getInstance().getGameManager().isGameRunning()) return;
         Player player = event.getPlayer();
         HSPlayer hsPlayer = HSPlayer.getExact(player.getUniqueId());
 
@@ -99,6 +102,7 @@ public class HideAndSeekListener implements Listener {
 
     @EventHandler
     public void disableDamageToSeeker(EntityDamageEvent event) {
+        if (!HideAndSeek.getInstance().getGameManager().isGameRunning()) return;
         Entity entity = event.getEntity();
 
         if (entity instanceof Player) {
@@ -107,6 +111,24 @@ public class HideAndSeekListener implements Listener {
 
             if (hsPlayer.getCurrentTeam().getTeamType() == TeamType.SEEKER) {
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void disablePotionConsume(EntityPotionEffectEvent event) {
+        if (!HideAndSeek.getInstance().getGameManager().isGameRunning()) return;
+        Entity entity = event.getEntity();
+        EntityPotionEffectEvent.Action action = event.getAction();
+
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            HSPlayer hsPlayer = HSPlayer.getExact(player.getUniqueId());
+
+            if (hsPlayer.isExempt()) return;
+
+            if (action == EntityPotionEffectEvent.Action.ADDED || action == EntityPotionEffectEvent.Action.CHANGED) {
+                event.setCancelled(true);
             }
         }
     }
