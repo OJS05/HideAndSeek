@@ -122,7 +122,7 @@ public class GameManager {
 
                     ChatColor prefix = playerCache.getRank().getPrefix();
 
-                    boolean afk = playerCache.isAFK(); // might not be async safe....
+                    boolean afk = playerCache.isAFK();
 
                     if (afk) {
                         prefix = ChatColor.GRAY;

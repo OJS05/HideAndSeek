@@ -35,6 +35,12 @@ public class HSCommands implements CommandExecutor {
                 }
             }
 
+            if (args[0].equalsIgnoreCase("cancel")) {
+                if (sender.hasPermission("hideandseek.admin")) {
+                    gameManager.finishGame();
+                }
+            }
+
             if (args[0].equalsIgnoreCase("hint")) {
                 if (gameManager.isGameRunning()) {
                     if (sender instanceof Player) {
