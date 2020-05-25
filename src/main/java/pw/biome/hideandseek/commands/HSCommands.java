@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import pw.biome.hideandseek.HideAndSeek;
 import pw.biome.hideandseek.objects.HSPlayer;
 import pw.biome.hideandseek.util.GameManager;
+import pw.biome.hideandseek.util.TeamType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +25,10 @@ public class HSCommands implements CommandExecutor {
         GameManager gameManager = HideAndSeek.getInstance().getGameManager();
 
         if (args.length == 0) {
-            // Show list of all available commands here
-        }
-
-        if (args.length > 0) {
+            sender.sendMessage(ChatColor.DARK_AQUA + "HideAndSeek Commands:");
+            sender.sendMessage(ChatColor.AQUA + "/hideandseek hint - Provides a small hint! Has a cooldown");
+            sender.sendMessage(ChatColor.AQUA + "/hideandseek list - Shows a list of whos on what team");
+        } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("create")) {
                 if (sender.hasPermission("hideandseek.admin")) {
                     gameManager.createGame();
@@ -44,16 +45,6 @@ public class HSCommands implements CommandExecutor {
                                 Bukkit.getScheduler().runTaskAsynchronously(HideAndSeek.getInstance(), () -> {
                                     int randomIndex = gameManager.getRandom().nextInt(gameManager.getHiders().getMembers().size());
                                     HSPlayer randomHsPlayerHider = gameManager.getHiders().getMembers().get(randomIndex);
-
-                                    // There's a condition here when
-                                /*
-                                Hider player leaves -> their task wont run for 10 minutes to set them as seeker
-                                If a seeker runs hint and the random lands on ^ that player
-                                This will be null, which will return true and the user will not be sent a hint (they will not be given cooldown tho)
-                                what we should do instead is loop and ensure that we did get an online hider
-                                You can work this out ;)
-                                or ignore, up to you
-                                 */
 
                                     Player randomHider = Bukkit.getPlayer(randomHsPlayerHider.getUuid());
 
@@ -75,16 +66,6 @@ public class HSCommands implements CommandExecutor {
                         if (gameManager.getHiders().getMembers().contains(hsPlayer)) {
                             if (!cooldown.contains(player.getUniqueId())) {
                                 Bukkit.getScheduler().runTaskAsynchronously(HideAndSeek.getInstance(), () -> {
-
-                                    // There's a condition here when
-                                /*
-                                Hider player leaves -> their task after 10 mins sets them as SEEKER but they arent online
-                                If a HIDER runs hint and the random lands on ^ that player
-                                This will be null, which wont do anything and the user will not be sent a hint (they will not be given cooldown tho)
-                                what we should do instead is loop and ensure that we did get an online hider
-                                You can work this out ;)
-                                or ignore, up to you
-                                 */
 
                                     double distMin = 1000000000;
                                     for (HSPlayer seekers : gameManager.getSeekers().getMembers()) {
@@ -137,24 +118,43 @@ public class HSCommands implements CommandExecutor {
                 }
             }
 
-            if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("exempt")) {
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
-                        HSPlayer hsPlayer = HSPlayer.getExact(player.getUniqueId());
+            if (args[0].equalsIgnoreCase("exempt")) {
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    HSPlayer hsPlayer = HSPlayer.getExact(player.getUniqueId());
 
-                        if (!hsPlayer.isExempt()) {
-                            hsPlayer.setExempt(true);
-                        }
+                    if (!hsPlayer.isExempt()) {
+                        hsPlayer.setExempt(true);
                     }
                 }
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("include")) {
+            }
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("include")) {
                 if (sender.hasPermission("hideandseek.admin")) {
                     Player target = Bukkit.getPlayer(args[1]);
 
                     if (target != null) {
                         HSPlayer hsPlayer = HSPlayer.getExact(target.getUniqueId());
                         hsPlayer.setExempt(false);
+                    }
+                }
+            }
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("force")) {
+                if (sender.hasPermission("hideandseek.admin")) {
+                    Player target = Bukkit.getPlayer(args[1]);
+                    TeamType forceTeam = TeamType.valueOf(args[2]);
+
+                    if (target != null) {
+                        HSPlayer hsPlayer = HSPlayer.getExact(target.getUniqueId());
+
+                        if (forceTeam == TeamType.HIDER) {
+                            hsPlayer.setCurrentTeam(gameManager.getHiders(), true);
+                        } else if (forceTeam == TeamType.SEEKER) {
+                            hsPlayer.setCurrentTeam(gameManager.getSeekers(), true);
+                        } else {
+                            hsPlayer.setCurrentTeam(null, false);
+                        }
                     }
                 }
             }

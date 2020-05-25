@@ -100,7 +100,9 @@ public class GameManager {
         this.gameRunning = false;
         this.canHiderJoin = false;
 
-        taskList.forEach(BukkitTask::cancel);
+        taskList.forEach(bukkitTask -> {
+            if (!bukkitTask.isCancelled()) bukkitTask.cancel();
+        });
 
         iChat.getPlugin().restartScoreboardTask();
 
@@ -141,9 +143,7 @@ public class GameManager {
 
     private void saveExemptList() {
         List<String> uuidStringList = new ArrayList<>();
-        exemptPlayers.forEach(uuid -> {
-            uuidStringList.add(uuid.toString());
-        });
+        exemptPlayers.forEach(uuid -> uuidStringList.add(uuid.toString()));
 
         HideAndSeek.getInstance().getConfig().set("exempt-players", uuidStringList);
         HideAndSeek.getInstance().saveConfig();
