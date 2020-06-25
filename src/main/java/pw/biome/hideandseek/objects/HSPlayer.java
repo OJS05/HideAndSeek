@@ -1,8 +1,8 @@
 package pw.biome.hideandseek.objects;
 
 import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import pw.biome.hideandseek.HideAndSeek;
 
 import java.util.UUID;
